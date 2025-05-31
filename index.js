@@ -260,7 +260,7 @@ app.get("/modeles", async (req, res) => {
       `SELECT m.nom_modele 
        FROM modeles AS m
        JOIN marques AS ma ON m.marque_id = ma.id
-       WHERE ma.nom = ?`, 
+       WHERE ma.nom_marque = ?`, 
       [marque]
     );
 
