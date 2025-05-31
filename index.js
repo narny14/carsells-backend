@@ -246,6 +246,25 @@ app.get("/testdb", async (req, res) => {
   }
 });
 
+app.get("/voiture", async (req, res) => {
+  try {
+    // Requête pour récupérer toutes les marques
+    const [marques] = await db.execute("SELECT * FROM marques");
+
+    // Vérification si des marques sont présentes
+    if (marques.length === 0) {
+      return res.status(404).json({ message: "Aucune marque trouvée." });
+    }
+
+    // Envoi des résultats
+    res.status(200).json({ marques });
+  } catch (err) {
+    console.error("❌ Erreur GET /marques :", err.stack);
+    res.status(500).json({ error: "Erreur serveur", details: err.message });
+  }
+});
+
+
 
 // Exemple de route pour récupérer les modèles d'une marque
 app.get("/modeles", async (req, res) => {
