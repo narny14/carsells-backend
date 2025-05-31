@@ -25,7 +25,7 @@ app.get("/test", (req, res) => {
 // Route pour insérer les données dans la table 'marques'
 app.post("/insert-marques", (req, res) => {
   const sql = `
-    INSERT INTO \modeles\ (\id\, \marque_id\, \nom_modele\, \type_modele\) VALUES
+    INSERT INTO modeles (id, marque_id, nom_modele, type_modele) VALUES
 (1, 9, 'A1', 'Compacte'),
 (2, 9, 'A1 Sportback', 'Compacte'),
 (3, 9, 'A3', 'Berline'),
