@@ -257,7 +257,11 @@ app.get("/modeles", async (req, res) => {
 
   try {
     const [modeles] = await db.execute(
-      "SELECT nom_modele FROM modeles WHERE marque = ?", [marque]
+      `SELECT m.nom_modele 
+       FROM modeles AS m
+       JOIN marques AS ma ON m.marque_id = ma.id
+       WHERE ma.nom = ?`, 
+      [marque]
     );
 
     if (modeles.length === 0) {
@@ -270,6 +274,7 @@ app.get("/modeles", async (req, res) => {
     res.status(500).json({ error: "Erreur serveur", details: err.message });
   }
 });
+
 // Exemple route test DB
 app.get("/test-db", (req, res) => {
   db.query("SELECT 1", (err, result) => {
