@@ -257,7 +257,7 @@ app.get("/modeles", async (req, res) => {
 
   let conn;
   try {
-    conn = await pool.getConnection();
+    conn = await pool.getConnection();  // Utiliser pool pour obtenir une connexion
     
     // Requête SQL pour récupérer les modèles correspondant à la marque
     const [modeles] = await conn.execute(
@@ -273,10 +273,9 @@ app.get("/modeles", async (req, res) => {
     console.error("❌ Erreur GET /modeles :", err.stack);
     res.status(500).json({ error: "Erreur serveur", details: err.message });
   } finally {
-    if (conn) conn.release();
+    if (conn) conn.release(); // Toujours libérer la connexion
   }
 });
-
 
 
 // Exemple route test DB
