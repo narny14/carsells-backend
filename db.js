@@ -1,7 +1,5 @@
 const mysql = require("mysql2");
 
-require("dotenv").config();
-
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -13,7 +11,6 @@ const db = mysql.createConnection({
 db.connect((err) => {
   if (err) {
     console.error("❌ Erreur de connexion à la base de données :", err);
-
   } else {
     console.log("✅ Connecté à la base de données MySQL Railway");
   }

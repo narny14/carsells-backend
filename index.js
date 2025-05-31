@@ -1,27 +1,27 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const db = require("./db");
-
+const db = require("./db"); // connexion MySQL
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("🚀 API Carsells Backend");
+  res.send("API Carsell backend 🚗 est en ligne");
 });
 
-// Tester la connexion à la DB
-app.get("/testdb", (req, res) => {
-  db.query("SELECT 1", (err, results) => {
+// Exemple route test DB
+app.get("/test-db", (req, res) => {
+  db.query("SELECT 1", (err, result) => {
     if (err) {
-      res.status(500).json({ success: false, message: "Erreur DB ❌", erreur: err.message });
-    } else {
-      res.json({ success: true, message: "Connexion OK ✅", result: results });
+      return res.status(500).send("Erreur DB : " + err.message);
     }
+    res.send("Connexion DB OK !");
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🚀 Serveur démarré sur le port ${PORT}`);
 });
