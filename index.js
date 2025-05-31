@@ -257,7 +257,7 @@ app.get("/modeles", async (req, res) => {
 
   try {
     const [modeles] = await db.execute(
-      "SELECT modele FROM modeles WHERE marque = ?", [marque]
+      "SELECT nom_modele FROM modeles WHERE marque = ?", [marque]
     );
 
     if (modeles.length === 0) {
