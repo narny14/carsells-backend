@@ -1,6 +1,7 @@
 const mysql = require("mysql2/promise");
 
-const db = mysql.createConnection({
+// Créer un pool de connexions
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT || 3306,  // Port par défaut MySQL
   user: process.env.DB_USER,
@@ -12,7 +13,6 @@ const db = mysql.createConnection({
   },
 });
 
-// Exporter la connexion pour utilisation dans d'autres fichiers
-module.exports = db;
-
+// Exporter le pool pour utilisation dans d'autres fichiers
+module.exports = pool;
 
