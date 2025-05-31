@@ -249,18 +249,14 @@ app.get("/testdb", async (req, res) => {
 
 // Exemple de route pour récupérer les modèles d'une marque
 app.get("/modeles", async (req, res) => {
-  const { marque } = req.query; // Récupérer la marque depuis les paramètres de la requête
+  const { marque } = req.query;
 
   if (!marque) {
     return res.status(400).json({ message: "La marque est requise." });
   }
 
-  let conn;
   try {
-    conn = await pool.getConnection();  // Utiliser pool pour obtenir une connexion
-    
-    // Requête SQL pour récupérer les modèles correspondant à la marque
-    const [modeles] = await conn.execute(
+    const [modeles] = await db.execute(
       "SELECT modele FROM modeles WHERE marque = ?", [marque]
     );
 
@@ -272,12 +268,8 @@ app.get("/modeles", async (req, res) => {
   } catch (err) {
     console.error("❌ Erreur GET /modeles :", err.stack);
     res.status(500).json({ error: "Erreur serveur", details: err.message });
-  } finally {
-    if (conn) conn.release(); // Toujours libérer la connexion
   }
 });
-
-
 // Exemple route test DB
 app.get("/test-db", (req, res) => {
   db.query("SELECT 1", (err, result) => {
