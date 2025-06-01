@@ -279,7 +279,7 @@ app.get("/modeles", async (req, res) => {
       SELECT modeles.id, modeles.nom_modele, modeles.type_modele 
       FROM modeles
       INNER JOIN marques ON modeles.marque_id = marques.id
-      WHERE marques.nom = ?
+      WHERE marques.nom_marque = ?
       `,
       [marque]
     );
