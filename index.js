@@ -35,6 +35,25 @@ app.get("/test", (req, res) => {
   });
 });
 
+app.get("/annoncesdujour", async (req, res) => {
+  try {
+    const [annonces] = await pool.execute(`
+      SELECT * FROM annonces
+      WHERE DATE(date_creation) = CURDATE()
+      ORDER BY date_creation DESC
+    `);
+
+    if (annonces.length === 0) {
+      return res.status(404).json({ message: "Aucune annonce publiée aujourd'hui." });
+    }
+
+    res.status(200).json(annonces);
+  } catch (error) {
+    console.error("❌ Erreur GET /annoncesdujour :", error);
+    res.status(500).json({ error: "Erreur serveur", details: error.message });
+  }
+});
+
 // 🔧 Multer (upload images)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
