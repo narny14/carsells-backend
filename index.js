@@ -163,10 +163,10 @@ app.post("/annoncestext", async (req, res) => {
         volantChauffant, demarrageSansCle, coffreElectrique, storesPareSoleil, seats,iduser
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      marque || null, modele || null, moteur || null, transmission || null, iduser || null,
+      marque || null, modele || null, moteur || null, transmission || null,
       freins || null, suspension || null, essaiRoutier || null, prixDecimal,
       climatisation, siegesChauffants, reglageSieges, toitOuvrant,
-      volantChauffant, demarrageSansCle, coffreElectrique, storesPareSoleil, seats || null
+      volantChauffant, demarrageSansCle, coffreElectrique, storesPareSoleil, seats || null, iduser || null
     ]);
 
     res.status(200).json({ message: "✅ Annonce texte enregistrée", id: result.insertId });
@@ -179,6 +179,7 @@ app.post("/annoncestext", async (req, res) => {
 });
 
 // ✅ POST /annoncestextimg
+/*
 app.post("/annoncestextimg", upload.array("photos", 10), async (req, res) => {
   const { annonce_id,iduser } = req.body;
   if (!annonce_id) return res.status(400).json({ message: "Le champ 'annonce_id' est requis." });
@@ -198,6 +199,53 @@ app.post("/annoncestextimg", upload.array("photos", 10), async (req, res) => {
     }
 
     res.status(201).json({ message: "Images ajoutées avec succès." });
+  } catch (err) {
+    console.error("❌ Erreur POST /annoncestextimg :", err.stack);
+    res.status(500).json({ error: "Erreur serveur", details: err.message });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+*/
+app.post("/annoncestextimg", upload.array("photos", 10), async (req, res) => {
+  const { iduser } = req.body;
+
+  if (!iduser) {
+    return res.status(400).json({ message: "Le champ 'iduser' est requis." });
+  }
+
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ message: "Au moins une image est requise." });
+  }
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // 🔍 Récupérer la dernière annonce insérée par cet utilisateur
+    const [rows] = await conn.execute(
+      "SELECT id FROM annonces WHERE iduser = ? ORDER BY date_creation DESC LIMIT 1",
+      [iduser]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Aucune annonce trouvée pour cet utilisateur." });
+    }
+
+    const annonce_id = rows[0].id;
+
+    // 📸 Insertion des photos liées à l'annonce
+    for (const file of req.files) {
+      await conn.execute(
+        "INSERT INTO photos_annoncees (annonce_id, photo_url, iduser) VALUES (?, ?, ?)",
+        [annonce_id, file.filename, iduser]
+      );
+    }
+
+    res.status(201).json({
+      message: "Images ajoutées avec succès.",
+      annonce_id: annonce_id
+    });
   } catch (err) {
     console.error("❌ Erreur POST /annoncestextimg :", err.stack);
     res.status(500).json({ error: "Erreur serveur", details: err.message });
