@@ -38,8 +38,7 @@ app.get("/test", (req, res) => {
 app.get("/annoncesdujour", async (req, res) => {
   try {
     const [annonces] = await pool.execute(`
-      SELECT * FROM annonces
-      WHERE DATE(date_creation) = CURDATE()
+      SELECT * FROM annonces 
       ORDER BY date_creation DESC
     `);
 
