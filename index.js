@@ -214,7 +214,7 @@ app.get("/uploads-list", (req, res) => {
       return res.status(500).json({ error: 'Impossible de lire le dossier uploads', details: err.message });
     }
 
-    const fileUrls = files.map(file => `https://carsell-backend.onrender.com/uploads/${file}`);
+    const fileUrls = files.map(file => `https://carsells-backend.onrender.com/uploads/${file}`);
     res.json({ fichiers: fileUrls });
   });
 });
