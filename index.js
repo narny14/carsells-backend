@@ -76,7 +76,7 @@ app.post("/utilisateurs", async (req, res) => {
       return res.status(200).json({ message: "Utilisateur déjà enregistré." });
     }
 
-    await conn.execute("INSERT INTO users (uid, email) VALUES (?, ?)", [uid, email]);
+    await conn.execute("INSERT INTO users (id,uid, email) VALUES (?,?, ?)", [uid, email]);
     res.status(201).json({ message: "Utilisateur enregistré avec succès." });
   } catch (error) {
     console.error("Erreur MySQL :", error);
