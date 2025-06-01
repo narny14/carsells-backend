@@ -266,6 +266,36 @@ app.get("/voiture", async (req, res) => {
   }
 });
 
+app.get("/modeles", async (req, res) => {
+  try {
+    const marque = req.query.marque;
+
+    if (!marque) {
+      return res.status(400).json({ error: "Paramètre 'marque' requis." });
+    }
+
+    const [modeles] = await db.execute(
+      `
+      SELECT modeles.id, modeles.nom_modele, modeles.type_modele 
+      FROM modeles
+      INNER JOIN marques ON modeles.marque_id = marques.id
+      WHERE marques.nom = ?
+      `,
+      [marque]
+    );
+
+    if (modeles.length === 0) {
+      return res.status(404).json({ message: "Aucun modèle trouvé pour cette marque." });
+    }
+
+    res.status(200).json(modeles);
+  } catch (err) {
+    console.error("❌ Erreur GET /modeles :", err.stack);
+    res.status(500).json({ error: "Erreur serveur", details: err.message });
+  }
+});
+
+
 
 
 // Exemple de route pour récupérer les modèles d'une marque
