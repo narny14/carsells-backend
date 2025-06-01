@@ -70,13 +70,13 @@ app.post("/utilisateurs", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const [existingUser] = await conn.execute("SELECT * FROM users WHERE uid = ?", [uid]);
+    const [existingUser] = await conn.execute("SELECT * FROM userrs WHERE uid = ?", [uid]);
 
     if (existingUser.length > 0) {
       return res.status(200).json({ message: "Utilisateur déjà enregistré." });
     }
 
-    await conn.execute("INSERT INTO users (id,uid, email) VALUES (?,?, ?)", [uid, email]);
+    await conn.execute("INSERT INTO userrs (id,uid, email) VALUES (?,?, ?)", [uid, email]);
     res.status(201).json({ message: "Utilisateur enregistré avec succès." });
   } catch (error) {
     console.error("Erreur MySQL :", error);
