@@ -136,7 +136,7 @@ app.post("/annonces", upload.array("photos", 10), async (req, res) => {
 // ✅ POST /annoncestext
 app.post("/annoncestext", async (req, res) => {
   const {
-    marque, modele, moteur, transmission, freins, suspension, essaiRoutier,
+    marque, modele, moteur, transmission, freins, suspension, essaiRoutier,iduser,
     prix, seats, equipements = {}
   } = req.body;
 
@@ -160,10 +160,10 @@ app.post("/annoncestext", async (req, res) => {
       INSERT INTO annonces (
         marque, modele, moteur, transmission, freins, suspension, essaiRoutier,
         prix, climatisation, siegesChauffants, reglageSieges, toitOuvrant,
-        volantChauffant, demarrageSansCle, coffreElectrique, storesPareSoleil, seats
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        volantChauffant, demarrageSansCle, coffreElectrique, storesPareSoleil, seats,iduser
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      marque || null, modele || null, moteur || null, transmission || null,
+      marque || null, modele || null, moteur || null, transmission || null, iduser || null,
       freins || null, suspension || null, essaiRoutier || null, prixDecimal,
       climatisation, siegesChauffants, reglageSieges, toitOuvrant,
       volantChauffant, demarrageSansCle, coffreElectrique, storesPareSoleil, seats || null
@@ -180,7 +180,7 @@ app.post("/annoncestext", async (req, res) => {
 
 // ✅ POST /annoncestextimg
 app.post("/annoncestextimg", upload.array("photos", 10), async (req, res) => {
-  const { annonce_id } = req.body;
+  const { annonce_id,iduser } = req.body;
   if (!annonce_id) return res.status(400).json({ message: "Le champ 'annonce_id' est requis." });
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: "Au moins une image est requise." });
@@ -192,8 +192,8 @@ app.post("/annoncestextimg", upload.array("photos", 10), async (req, res) => {
 
     for (const file of req.files) {
       await conn.execute(
-        "INSERT INTO photos_annoncees (annonce_id, photo_url) VALUES (?, ?)",
-        [annonce_id, file.filename]
+        "INSERT INTO photos_annoncees (annonce_id, photo_url,iduser) VALUES (?, ?, ?)",
+        [annonce_id, file.filename,iduser]
       );
     }
 
